@@ -249,3 +249,10 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
+        while self.running:
+            IR = self.ram[self.pc]
+            try:
+                if IR in self.branchtable:
+                    self.branchtable[IR]()
+            except ValueError:
+                print(f'Invalid Opcode {hex(IR)}')
