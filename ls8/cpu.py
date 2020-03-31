@@ -91,51 +91,129 @@ class CPU:
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
         # elif op == "SUB": etc
+        elif op == "MUL":
+            self.reg[reg_a] *= self.reg[reg_b]
+        elif op == "CMP":
+            operand_a = self.reg[reg_a]
+            operand_b = self.reg[reg_b]
+            if operand_a == operand_b:
+                self.equal = 1
+            else:
+                self.equal = 0
         else:
             raise Exception("Unsupported ALU operation")
-    
+
     '''
     instruction handlers set in branchtable
     '''
 
     def ldi(self):
-        pass
+        '''
+        an LDI instruction takes two operands loaded into ram
+        '''
+        # get operands
+        operand_a = self.ram_read(self.pc+1)
+        operand_b = self.ram_read(self.pc+2)
+        # load to register
+        self.reg[operand_a] = operand_b
+        # increment program counter by 3
+        self.pc += 3
 
     def add(self):
-        pass
+        # get operands
+        operand_a = self.ram_read(self.pc+1)
+        operand_b = self.ram_read(self.pc+2)
+        # call alu function to handle the arithmetic
+        self.alu('ADD', operand_a, operand_b)
+        # increment program counter by 3
+        self.pc += 3
 
     def mul(self):
-        pass
+        # get operands
+        operand_a = self.ram_read(self.pc+1)
+        operand_b = self.ram_read(self.pc+2)
+        # call alu function to handle the arithmetic
+        self.alu('MUL', operand_a, operand_b)
+        # increment program counter by 3
+        self.pc += 3
 
     def prn(self):
-        pass
+        # get operand
+        operand_a = self.ram_read(self.pc+1)
+        # print the value
+        print(self.reg[operand_a])
+        # increment program counter by 2
+        self.pc += 2
 
     def hlt(self):
-        pass
+        # set running to False
+        self.running = False
 
     def push(self):
-        pass
+        # get the register address from ram
+        reg = self.ram_read(self.pc+1)
+        # get the value from register
+        val = self.reg[reg]
+        # decrement stack pointer
+        self.reg[self.sp] -= 1
+        # set new value to ram
+        self.ram[self.reg[self.sp]] = val
+        # increment program counter by 2
+        self.pc += 2
 
     def pop(self):
-        pass
+        # get the register address from ram
+        reg = self.ram_read(self.pc+1)
+        # get the value from register
+        val = self.ram_read(self.reg[self.sp])
+        # increment stack pointer
+        self.reg[self.sp] += 1
+        # set new value to reg
+        self.reg[reg] = val
+        # increment program counter by 2
+        self.pc += 2
 
     def call(self):
-        pass
+        # setup
+        reg = self.ram_read(self.pc + 1)
+        # CALL
+        self.reg[self.sp] -= 1  # decrement sp
+        # push pc + 2 on to the stack
+        self.ram_write(self.reg[self.sp], self.pc+2)
+        # set pc to subroutine
+        self.pc = self.reg[reg]
 
     def ret(self):
-        pass
+        self.pc = self.ram_read(self.reg[self.sp])
+        self.reg[self.sp] += 1
 
     def cmp(self):
-        pass
+        reg_a = self.ram_read(self.pc+1)
+        reg_b = self.ram_read(self.pc+2)
+        # call alu function to handle the arithmetic
+        self.alu('CMP', reg_a, reg_b)
+        self.pc += 3
 
     def jeq(self):
-        pass
+        reg_a = self.ram_read(self.pc+1)
+        operand_a = self.reg[reg_a]
+        if self.equal:
+            self.pc = operand_a
+        else:
+            self.pc += 2
 
     def jne(self):
-        pass
+        reg_a = self.ram_read(self.pc+1)
+        operand_a = self.reg[reg_a]
+        if self.equal == False:
+            self.pc = operand_a
+        else:
+            self.pc += 2
 
     def jmp(self):
-        pass
+        reg_a = self.ram_read(self.pc+1)
+        operand_a = self.reg[reg_a]
+        self.pc = operand_a
 
     def trace(self):
         """
@@ -171,4 +249,3 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        pass
