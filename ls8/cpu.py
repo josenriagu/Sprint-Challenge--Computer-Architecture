@@ -20,6 +20,37 @@ class CPU:
         # run state
         self.running = True
 
+        # decimal conversions of instructions
+        LDI = 130
+        MUL = 162
+        PRN = 71
+        HLT = 1
+        PUSH = 69
+        POP = 70
+        ADD = 160
+        CALL = 80
+        RET = 17
+        CMP = 167
+        JEQ = 85
+        JNE = 86
+        JMP = 84
+
+        # initialize branchtable to hold functions
+        self.branchtable = {}
+        self.branchtable[LDI] = self.ldi
+        self.branchtable[ADD] = self.add
+        self.branchtable[MUL] = self.mul
+        self.branchtable[PRN] = self.prn
+        self.branchtable[HLT] = self.hlt
+        self.branchtable[PUSH] = self.push
+        self.branchtable[POP] = self.pop
+        self.branchtable[CALL] = self.call
+        self.branchtable[RET] = self.ret
+        self.branchtable[CMP] = self.cmp
+        self.branchtable[JEQ] = self.jeq
+        self.branchtable[JNE] = self.jne
+        self.branchtable[JMP] = self.jmp
+
     def load(self, file_name):
         """Load a program into memory."""
 
@@ -62,6 +93,49 @@ class CPU:
         # elif op == "SUB": etc
         else:
             raise Exception("Unsupported ALU operation")
+    
+    '''
+    instruction handlers set in branchtable
+    '''
+
+    def ldi(self):
+        pass
+
+    def add(self):
+        pass
+
+    def mul(self):
+        pass
+
+    def prn(self):
+        pass
+
+    def hlt(self):
+        pass
+
+    def push(self):
+        pass
+
+    def pop(self):
+        pass
+
+    def call(self):
+        pass
+
+    def ret(self):
+        pass
+
+    def cmp(self):
+        pass
+
+    def jeq(self):
+        pass
+
+    def jne(self):
+        pass
+
+    def jmp(self):
+        pass
 
     def trace(self):
         """
