@@ -53,12 +53,9 @@ class CPU:
 
     def load(self, file_name):
         """Load a program into memory."""
-
         address = 0
-
         directory = os.path.join(os.path.dirname(__file__), "examples/")
         file_path = os.path.join(directory, file_name)
-
         program = list()
         try:
             with open(file_path) as f:
